@@ -1,7 +1,5 @@
 package ml.cdslplugin.actions;
 
-import java.net.InetAddress;
-
 import ml.cdslplugin.Activator;
 import ml.cdslplugin.preferences.PreferenceConstants;
 import ml.cdslplugin.process.RunJobProcess;
@@ -19,9 +17,14 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  * Our sample action implements workbench action delegate.
  * The action proxy will be created by the workbench and
  * shown in the UI. When the user tries to use the action,
- * this delegate will be created and execution will be 
+ * this delegate will be created and execution will be
  * delegated to it.
+ * 
+ * <br><br>Action que muestra la ventana de ejecución de job
+ * 
  * @see IWorkbenchWindowActionDelegate
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
  */
 public class RunJobAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
@@ -71,21 +74,26 @@ public class RunJobAction implements IWorkbenchWindowActionDelegate {
 			return;
 		}
 		
-		// Verifico que exista comunicación con la VM
-		try {
-			InetAddress inet = InetAddress.getByName(vmIP);
-			if (!inet.isReachable(10000)) {
-				throw new Exception();
-			}
-		}
-		catch (Exception e) {
-			MessageDialog.openError(
-					window.getShell(), DIALOG_TITLE,
-					"No es posible la comunicación con " + vmIP);
-			return;
-		}
+		/*
+		 * Esto lo comento porque a través de la VPN no anda.
+		 * Si no hay conexión a la VM, el error saltará al ejecutar
+		 * el comando y se informará algo más feo al usuario.
+		 */
+//		// Verifico que exista comunicación con la VM
+//		try {
+//			InetAddress inet = InetAddress.getByName(vmIP);
+//			if (!inet.isReachable(10000)) {
+//				throw new Exception();
+//			}
+//		}
+//		catch (Exception e) {
+//			MessageDialog.openError(
+//					window.getShell(), DIALOG_TITLE,
+//					"No es posible la comunicación con " + vmIP);
+//			return;
+//		}
 		
-		RunJobForm form = new RunJobForm(window.getShell(), 
+		RunJobForm form = new RunJobForm(window.getShell(),
 				Activator.getDefault().getPreviousJobs(),
 				Activator.getDefault().getPreviousJobParams());
 		
@@ -111,16 +119,18 @@ public class RunJobAction implements IWorkbenchWindowActionDelegate {
 			Activator.getDefault().addJobParam(params);
 		}
 		
+		boolean debug = form.getDebug();
+		
 		RunJobProcess rjp = null;
 		try {
-			rjp = new RunJobProcess(vmUser, vmIP, cdslKey, runJob, job, params);
+			rjp = new RunJobProcess(vmUser, vmIP, cdslKey, runJob, job, params, debug);
 			//Progress bar chiquita abajo
 			window.run(true, false, rjp);
 		}
 		catch (Exception e) {
 			MessageDialog.openError(
 					window.getShell(), DIALOG_TITLE,
-					"Error al correr el job " + job + 
+					"Error al correr el job " + job +
 							" con los parámetros [" + params + "]: " + e);
 			e.printStackTrace();
 			return;
@@ -129,7 +139,9 @@ public class RunJobAction implements IWorkbenchWindowActionDelegate {
 		if (rjp != null && rjp.getStatus() == RunJobProcess.STATUS_DONE) {
 			MessageDialog.openInformation(
 					window.getShell(), DIALOG_TITLE,
-					"OK\n\nEl job ha sido lanzado");
+					"OK\n\n" + (debug ?
+							("El job se lanzará cuando el debugger se conecte a " + vmIP + ":8002")
+							: "El job ha sido lanzado"));
 		}
 		else {
 			MessageDialog.openError(
@@ -139,9 +151,9 @@ public class RunJobAction implements IWorkbenchWindowActionDelegate {
 	}
 	
 	/**
-	 * Selection in the workbench has been changed. We 
+	 * Selection in the workbench has been changed. We
 	 * can change the state of the 'real' action here
-	 * if we want, but this can only happen after 
+	 * if we want, but this can only happen after
 	 * the delegate has been created.
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */

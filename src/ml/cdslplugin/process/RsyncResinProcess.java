@@ -10,6 +10,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
+/**
+ * Proceso de sincronización de recursos y reinicio de Resin
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
+ */
 public class RsyncResinProcess implements IRunnableWithProgress{
 	
 	public final static int STATUS_RUNNING = 0;
@@ -25,7 +30,7 @@ public class RsyncResinProcess implements IRunnableWithProgress{
 	private int status;
 	ArrayList<String> log;
 	
-	public RsyncResinProcess(String vmUser, String vmIP, 
+	public RsyncResinProcess(String vmUser, String vmIP,
 			String cdslKey, String syncList, String runRsync){
 		this.vmUser = vmUser;
 		this.vmIP = vmIP;

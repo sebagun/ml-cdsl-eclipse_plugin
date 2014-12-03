@@ -9,6 +9,22 @@
             visible="true"
             id="ml.cdslplugin.actionSet">
          <action
+               class="ml.cdslplugin.actions.RestartApacheAction"
+               icon="icons/sync.png"
+               id="ml.cdslplugin.actions.RestartApacheAction"
+               label="%action.label.3"
+               toolbarPath="ML_ACTION_SET/BuscadorGroup"
+               tooltip="%action.tooltip.3">
+         </action>
+         <action
+               class="ml.cdslplugin.actions.RestartResinAction"
+               icon="icons/sync.png"
+               id="ml.cdslplugin.actions.RestartResinAction"
+               label="%action.label.4"
+               toolbarPath="ML_ACTION_SET/BuscadorGroup"
+               tooltip="%action.tooltip.4">
+         </action>
+         <action
                class="ml.cdslplugin.actions.RunJobAction"
                icon="icons/job.gif"
                id="ml.cdslplugin.actions.RunJobAction"

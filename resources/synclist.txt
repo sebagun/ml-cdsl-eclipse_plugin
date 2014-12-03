@@ -1,1 +1,15 @@
 "/cygdrive/c/data2/orange/java/docdir/WEB-INF/classes";classes
+"/cygdrive/c/MercadoLibre/WEB-INF/lib/mlJar";mljar
+"/cygdrive/c/MercadoLibre/WEB-INF/lib";lib
+"/cygdrive/c/data2/orange/app-config/querys";queries
+"/cygdrive/c/data2/orange/java/eocs/filecontents";filecontents
+"/cygdrive/c/data2/orange/app-config/validator";validator
+"/cygdrive/c/data2/orange/mercadopago/conf";mpconf
+"/cygdrive/c/data2/orange/images/jsapi";jsapi
+"/cygdrive/c/MercadoLibre/WEB-INF/web.xml";webxml
+"/cygdrive/c/MercadoLibre/WEB-INF/dwr.xml";dwrxml
+"/cygdrive/c/MercadoLibre/WEB-INF/dwr-admin.xml";dwradminxml
+"/cygdrive/c/data2/orange/app-config/caches";caches
+"/cygdrive/c/data2/orange/app-config/pooldb";pooldb
+"/cygdrive/c/data2/orange/mercadopago/listados";listados
+"/cygdrive/c/data2/orange/java/dmz.xml";dmzxml

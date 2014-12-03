@@ -2,7 +2,7 @@ package ml.cdslplugin.actions;
 
 import ml.cdslplugin.Activator;
 import ml.cdslplugin.preferences.PreferenceConstants;
-import ml.cdslplugin.views.RsyncResinView;
+import ml.cdslplugin.process.RestartResinProcess;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -10,7 +10,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PartInitException;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -19,26 +18,25 @@ import org.eclipse.ui.PartInitException;
  * this delegate will be created and execution will be
  * delegated to it.
  * 
- * <br><br>Action que sincroniza Resin con los cambios locales
+ * <br><br>Action que reinicia Resin
  * 
  * @see IWorkbenchWindowActionDelegate
  * 
  * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
  */
-public class RsyncResinAction implements IWorkbenchWindowActionDelegate {
+public class RestartResinAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
 	
 	// Paths a archivos necesarios
 	private static String cdslKey = null;
-	private static String syncList = null;
-	private static String runRsync = null;
+	private static String restartResin = null;
 	
 	private static final String DIALOG_TITLE = "CDSL Eclipse Plug-in";
 	
 	/**
 	 * The constructor.
 	 */
-	public RsyncResinAction() {
+	public RestartResinAction() {
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class RsyncResinAction implements IWorkbenchWindowActionDelegate {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		String vmUser = store.getString(PreferenceConstants.P_VM_USER);
 		String vmIP = store.getString(PreferenceConstants.P_VM_IP);
-		boolean dontShowAlert = store.getBoolean(PreferenceConstants.P_ALERT_RSYNC);
+		boolean dontShowAlert = store.getBoolean(PreferenceConstants.P_ALERT_RESTART_RESIN);
 		
 		// Verifico que la configuración sea correcta
 		if (vmUser.equals("") || vmIP.equals("")) {
@@ -62,17 +60,15 @@ public class RsyncResinAction implements IWorkbenchWindowActionDelegate {
 		}
 		
 		if (cdslKey == null || cdslKey.equals("") ||
-				syncList == null || syncList.equals("") ||
-				runRsync == null || runRsync.equals("")) {
+				restartResin == null || restartResin.equals("")) {
 			// Pruebo volver a seteralos por si se actualizaron con Eclipse abierto
 			Activator.getDefault().setPaths();
 		}
 		if (cdslKey == null || cdslKey.equals("") ||
-				syncList == null || syncList.equals("") ||
-				runRsync == null || runRsync.equals("")) {
+				restartResin == null || restartResin.equals("")) {
 			MessageDialog.openError(
 					window.getShell(), DIALOG_TITLE,
-					"Configure los paths cdslkey, synclist y runrsync\n" +
+					"Configure los paths cdslkey y restartResin\n" +
 						"en el archivo Activator.properties");
 			return;
 		}
@@ -96,21 +92,26 @@ public class RsyncResinAction implements IWorkbenchWindowActionDelegate {
 //			return;
 //		}
 		
-		boolean doSync = dontShowAlert ? true : MessageDialog.openConfirm(
+		boolean restart = dontShowAlert ? true : MessageDialog.openConfirm(
 				window.getShell(), DIALOG_TITLE,
-				"¿Seguro que desea sincronizar Resin?\n\nUsuario: " + vmUser + "\nIP: " + vmIP);
+				"¿Seguro que desea reiniciar Resin?\n\nUsuario: " + vmUser + "\nIP: " + vmIP);
 		
-		if (doSync) {
-			boolean success = false;
-			// Ejecuta el script de sincronización
+		if (restart) {
+			RestartResinProcess rrp = null;
 			try {
-				RsyncResinView view = (RsyncResinView) Activator.getActivePage().showView(RsyncResinView.ID);
-				success = view.initScript(window, vmUser, vmIP, cdslKey, syncList, runRsync);
-			} catch (PartInitException e) {
+				rrp = new RestartResinProcess(vmUser, vmIP, cdslKey, restartResin);
+				//Progress bar chiquita abajo
+				window.run(true, false, rrp);
+			}
+			catch (Exception e) {
+				MessageDialog.openError(
+						window.getShell(), DIALOG_TITLE,
+						"Error al reiniciar Resin: " + e);
 				e.printStackTrace();
+				return;
 			}
 			
-			if (success) {
+			if (rrp != null && rrp.getStatus() == RestartResinProcess.STATUS_DONE) {
 				MessageDialog.openInformation(
 						window.getShell(), DIALOG_TITLE,
 						"OK\n\nResin ha reiniciado");
@@ -155,22 +156,14 @@ public class RsyncResinAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	public static void setCdslKey(String cdslKey) {
-		RsyncResinAction.cdslKey = cdslKey;
+		RestartResinAction.cdslKey = cdslKey;
 	}
 
-	public static String getSyncList() {
-		return syncList;
+	public static void setRestartResin(String restartResin) {
+		RestartResinAction.restartResin = restartResin;
 	}
 
-	public static void setSyncList(String syncList) {
-		RsyncResinAction.syncList = syncList;
-	}
-
-	public static String getRunRsync() {
-		return runRsync;
-	}
-
-	public static void setRunRsync(String runRsync) {
-		RsyncResinAction.runRsync = runRsync;
+	public static String getRestartResin() {
+		return restartResin;
 	}
 }

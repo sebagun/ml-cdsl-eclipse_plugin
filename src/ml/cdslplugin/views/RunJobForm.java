@@ -4,22 +4,30 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Cuadro de diálogo del "Correr Job"
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
+ */
 public class RunJobForm extends Dialog {
 	private Combo cmbJob;
 	private String[] previousJobs;
 	private Combo cmbJobParams;
 	private String[] previousJobParams;
+	private Button chkDebug;
 	
 	private String job;
 	private String params;
+	private boolean debug;
 	
-	private static final Point initialSize = new Point(346,200);
+	private static final Point initialSize = new Point(400,200);
 	
 	public RunJobForm(Shell parentShell, String[] previousJobs,
 			String[] previousJobParams) {
@@ -48,10 +56,15 @@ public class RunJobForm extends Dialog {
 		lblEjemploJob.setSize(330,18);
 		lblEjemploJob.setLocation(5, 50);
 		
-		final Label lblFiltroArchivos = new Label(container,SWT.LEFT);
-		lblFiltroArchivos.setText("Parámetros (opcional):");
-		lblFiltroArchivos.setSize(330, 18);
-		lblFiltroArchivos.setLocation(5, 80);
+		chkDebug = new Button(container,SWT.CHECK);
+		chkDebug.setText("Debug");
+		chkDebug.setSize(120, 20);
+		chkDebug.setLocation(334, 25);
+		
+		final Label lblParams = new Label(container,SWT.LEFT);
+		lblParams.setText("Parámetros (opcional):");
+		lblParams.setSize(330, 18);
+		lblParams.setLocation(5, 80);
 		
 		cmbJobParams = new Combo(container,SWT.DROP_DOWN);
 		cmbJobParams.setSize(323, 22);
@@ -103,6 +116,10 @@ public class RunJobForm extends Dialog {
 		return params;
 	}
 	
+	public boolean getDebug(){
+		return debug;
+	}
+	
 	@Override
 	protected Point getInitialSize() {
 		return initialSize;
@@ -112,6 +129,7 @@ public class RunJobForm extends Dialog {
 	protected void okPressed() {
 		job = cmbJob.getText();
 		params = cmbJobParams.getText();
+		debug = chkDebug.getSelection();
 		super.okPressed();
 	}
 	

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import ml.cdslplugin.actions.ResinConsoleAction;
+import ml.cdslplugin.actions.RestartApacheAction;
+import ml.cdslplugin.actions.RestartResinAction;
 import ml.cdslplugin.actions.RsyncResinAction;
 import ml.cdslplugin.actions.RunJobAction;
 
@@ -20,11 +22,17 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * <br><br>Obtengo los paths a los recursos desde el archivo
+ * properties y los seteo en los actions.
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
  */
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "ml.cdslplugin";
+	public static final String PLUGIN_VERSION = "1.1.0";
 
 	// The shared instance
 	private static Activator plugin;
@@ -143,11 +151,11 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static IWorkbenchPage getActivePage() {
 		return getActiveWorkbenchWindow().getActivePage();
-	} 
+	}
 
 	/**
 	 * @return Returns the workbench from which this plugin has been loaded.
-	 */	
+	 */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
@@ -158,19 +166,36 @@ public class Activator extends AbstractUIPlugin {
 	public void setPaths() {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("ml.cdslplugin.Activator");
-			String cdslKey = rb.getString("cdslkey");
+			String cdslKey = getPropertieValue(rb, "cdslkey");
 			RsyncResinAction.setCdslKey(cdslKey);
-			RsyncResinAction.setSyncList(rb.getString("synclist"));
-			RsyncResinAction.setRunRsync(rb.getString("runrsync"));
+			RsyncResinAction.setSyncList(getPropertieValue(rb, "synclist"));
+			RsyncResinAction.setRunRsync(getPropertieValue(rb, "runrsync"));
 			RunJobAction.setCdslKey(cdslKey);
-			RunJobAction.setRunJob(rb.getString("runjob"));
+			RunJobAction.setRunJob(getPropertieValue(rb, "runjob"));
 			ResinConsoleAction.setCdslKey(cdslKey);
+			RestartResinAction.setCdslKey(cdslKey);
+			RestartResinAction.setRestartResin(getPropertieValue(rb, "restartresin"));
+			RestartApacheAction.setCdslKey(cdslKey);
+			RestartApacheAction.setRestartApache(getPropertieValue(rb, "restartapache"));
 		}
 		catch (Exception e) {
 			System.err.println("No se puede leer el archivo Activator.properties");
 		}
 	}
 	
+	/**
+	 * Obtiene el valor correspondiente en el ResourceBundle
+	 * con los reemplazos customizados realizados
+	 * @param rb ResourseBundle
+	 * @param key La cadena (path) a buscar
+	 * @return El valor correspondiente a la key en el archivo
+	 * properties con los reemplazos necesarios realizados
+	 */
+	private String getPropertieValue(ResourceBundle rb, String key) {
+		return rb.getString(key).replace(
+				"##PLUGIN_FOLDER##", PLUGIN_ID + "_" + PLUGIN_VERSION);
+	}
+
 	public void addJob(String value){
 		if(previousJobs.indexOf(value) < 0)
 			previousJobs.add(value);

@@ -1,3 +1,5 @@
+REM Start Rsync daemon if is down
+START /MIN "PLINK_FOR_RSYNC" plink -i %3 -v -t -l %1 %2 sh /root/restartrsync
 REM Stop Resin
 START /MIN "PLINK_FOR_RSYNC" plink -i %3 -v -t -l %1 %2 sh /data1/resin/bin/httpd.sh stop
 REM Iterate through filenames in synclist.txt and rsync them

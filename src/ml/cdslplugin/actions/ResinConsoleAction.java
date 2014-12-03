@@ -1,7 +1,5 @@
 package ml.cdslplugin.actions;
 
-import java.net.InetAddress;
-
 import ml.cdslplugin.Activator;
 import ml.cdslplugin.preferences.PreferenceConstants;
 
@@ -16,9 +14,14 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  * Our sample action implements workbench action delegate.
  * The action proxy will be created by the workbench and
  * shown in the UI. When the user tries to use the action,
- * this delegate will be created and execution will be 
+ * this delegate will be created and execution will be
  * delegated to it.
+ * 
+ * <br><br>Action que muestra la consola de Resin
+ * 
  * @see IWorkbenchWindowActionDelegate
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
  */
 public class ResinConsoleAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
@@ -64,21 +67,26 @@ public class ResinConsoleAction implements IWorkbenchWindowActionDelegate {
 			return;
 		}
 		
-		// Verifico que exista comunicación con la VM
-		try {
-			InetAddress inet = InetAddress.getByName(vmIP);
-			if (!inet.isReachable(10000)) {
-				throw new Exception();
-			}
-		}
-		catch (Exception e) {
-			MessageDialog.openError(
-					window.getShell(), DIALOG_TITLE,
-					"No es posible la comunicación con " + vmIP);
-			return;
-		}
+		/*
+		 * Esto lo comento porque a través de la VPN no anda.
+		 * Si no hay conexión a la VM, el error saltará al ejecutar
+		 * el comando y se informará algo más feo al usuario.
+		 */
+//		// Verifico que exista comunicación con la VM
+//		try {
+//			InetAddress inet = InetAddress.getByName(vmIP);
+//			if (!inet.isReachable(10000)) {
+//				throw new Exception();
+//			}
+//		}
+//		catch (Exception e) {
+//			MessageDialog.openError(
+//					window.getShell(), DIALOG_TITLE,
+//					"No es posible la comunicación con " + vmIP);
+//			return;
+//		}
 		
-		String cmd = "cmd.exe /C START \"Consola de Resin\" plink -i " + cdslKey + " -v -t -l " + 
+		String cmd = "cmd.exe /C START \"Consola de Resin\" plink -i " + cdslKey + " -v -t -l " +
 				vmUser + " " + vmIP + " tail -f /data1/resin/log/stdout.log";
 		
 		try {
@@ -94,9 +102,9 @@ public class ResinConsoleAction implements IWorkbenchWindowActionDelegate {
 	}
 	
 	/**
-	 * Selection in the workbench has been changed. We 
+	 * Selection in the workbench has been changed. We
 	 * can change the state of the 'real' action here
-	 * if we want, but this can only happen after 
+	 * if we want, but this can only happen after
 	 * the delegate has been created.
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */

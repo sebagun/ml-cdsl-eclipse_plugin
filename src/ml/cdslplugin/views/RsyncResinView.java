@@ -31,6 +31,11 @@ import org.eclipse.ui.part.ViewPart;
  * in order to ensure that objects of the same type are
  * presented in the same way everywhere.
  * <p>
+ * 
+ * <br><br>Lanza el proceso de sincronización y muestra un panel
+ * con la salida de consola del script.
+ * 
+ * @author Sebastián Gun <sebastian.gun@mercadolibre.com>
  */
 
 public class RsyncResinView extends ViewPart {
@@ -51,7 +56,7 @@ public class RsyncResinView extends ViewPart {
 	public RsyncResinView() {
 	}
 
-	public boolean initScript(IWorkbenchWindow window, String vmUser, String vmIP, 
+	public boolean initScript(IWorkbenchWindow window, String vmUser, String vmIP,
 			String cdslKey, String syncList, String runRsync) {
 		RsyncResinProcess sync = null;
 		try {
