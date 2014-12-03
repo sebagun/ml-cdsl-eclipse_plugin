@@ -1,0 +1,6 @@
+/data1/resin/bin/httpd.sh stop
+/data1/product/9i/Apache/Apache/bin/apachectl stop
+killall -v -r "(.)*httpd|perl(.)*"
+sleep 10
+/data1/resin/bin/httpd.sh start
+/data1/product/9i/Apache/Apache/bin/apachectl start

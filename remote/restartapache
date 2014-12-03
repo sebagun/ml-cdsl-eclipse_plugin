@@ -1,0 +1,4 @@
+/data1/product/9i/Apache/Apache/bin/apachectl stop
+killall -v -r "(.)*httpd(.)*"
+sleep 10
+/data1/product/9i/Apache/Apache/bin/apachectl start
