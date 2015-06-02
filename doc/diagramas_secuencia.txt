@@ -1,0 +1,68 @@
+https://www.websequencediagrams.com/
+
+
+1er diagrama
+http://www.websequencediagrams.com/cgi-bin/cdraw?lz=UnN5bmNSZXNpbkFjdGlvbi0-K0FjdGl2YXRvcjogZ2V0Q3JlZGVudGlhbHMoKQoAEwktLT4tACwQOiBjACMKCgA5IVN5bmNMaXN0ADUicwAjBwBAFACBNwpWaWV3OiBzaG93VmlldygpAHcLVmlldwCBHBZ2aWV3ADMkaW5pdFNjcmlwdABHEgB5DFByb2Nlc3M6IHJ1bgB2DQASBy0-K3J1bnN5bmMuYmF0OiBleGVjKCkKAAkLAIJMDgBGCmVzdWwAgXYMAEkIAIJ8DQCBfgYAGxEAgSEGAIIaEWV0Q29udGVudERlcwCBVwVpb24oAGMGAIIYJgCBBBEAhD0IAIQJEm9wZW5JbmZvcm1hAGIFKSDDswAQBUVycm9yKCk&s=roundgreen
+
+
+RsyncResinAction->+Activator: getCredentials()
+Activator-->-RsyncResinAction: credentials
+RsyncResinAction->+Activator: getSyncList()
+Activator-->-RsyncResinAction: syncList
+RsyncResinAction->+RsyncResinView: showView()
+RsyncResinView-->-RsyncResinAction: view
+RsyncResinAction->+RsyncResinView: initScript()
+RsyncResinView->+RsyncResinProcess: run()
+RsyncResinProcess->+runsync.bat: exec()
+runsync.bat-->-RsyncResinProcess: result
+RsyncResinProcess-->-RsyncResinView: result
+RsyncResinView->RsyncResinView: setContentDescription(result)
+RsyncResinView-->-RsyncResinAction: result
+RsyncResinAction->RsyncResinAction: openInformation() ó openError()
+
+
+
+2do diagrama
+http://www.websequencediagrams.com/cgi-bin/cdraw?lz=UnVuSm9iQWN0aW9uLT4rQWN0aXZhdG9yOiBnZXRDcmVkZW50aWFscygpCgATCS0tPi0ALAw6IGMAHwoKAEMPAFsGRm9ybTogb3BlbigpABsHRm9ybS0-ABMMZ2V0Sm9iAAEgYlBhcmFtcwAqHkRlYnVnAF0OAIEkEWpvYiArIHAASQUgKyBkZWJ1ZwCBKBZQcm9jZXNzOiBydQCBNgoADgcAgTsIABsJcwB3B1BvcnQAGxIrcnVuam9iLmJhdDogZXhlYygpCgAJCi0APBJ0YXR1AIJNCABqCQA5DGdldExvZwA3EACDGgcAgTEJbG8AgVQIAIEwCACDNBEAXg0AhAoIAINaDm9wZW5JbmZvcm1hdGlvbigpIMOzAINRBUVycm9yKCk&s=roundgreen
+
+
+RunJobAction->+Activator: getCredentials()
+Activator-->-RunJobAction: credentials
+RunJobAction->+RunJobForm: open()
+RunJobForm->RunJobForm: getJob()
+RunJobForm->RunJobForm: getJobParams()
+RunJobForm->RunJobForm: getDebug()
+RunJobForm-->-RunJobAction: job + params + debug
+RunJobAction->+RunJobProcess: run()
+RunJobProcess->RunJobProcess: setDebugPort()
+RunJobProcess->+runjob.bat: exec()
+runjob.bat-->RunJobProcess: status
+RunJobProcess->runjob.bat: getLog()
+runjob.bat-->-RunJobProcess: log
+RunJobProcess-->-RunJobAction: status
+RunJobAction->RunJobAction: openInformation() ó openError()
+
+
+
+3er diagrama
+http://www.websequencediagrams.com/cgi-bin/cdraw?lz=UmVzdGFydCBbUmVzaW58QXBhY2hlXSBBY3Rpb24tPitBY3RpdmF0b3I6IGdldENyZWRlbnRpYWxzKCkKABMJLS0-LQAsHTogYwAwCgoAVCAAfRdQcm9jZXNzOiBydW4oKQAuGAAfBy0-K3IAgVMIcgCBVgVhAIFVBi5iYXQ6IGV4ZWMoKQoACRoAgTgbAIB_CXN0YXR1AIE2GQCBAQgAgXoiACoeAIMDCACCQh9vcGVuSW5mb3JtYXRpb24oKSDDswAQBUVycm9yKCk&s=roundgreen
+
+
+Restart [Resin|Apache] Action->+Activator: getCredentials()
+Activator-->-Restart [Resin|Apache] Action: credentials
+Restart [Resin|Apache] Action->+Restart [Resin|Apache] Process: run()
+Restart [Resin|Apache] Process->+restart [resin|apache].bat: exec()
+restart [resin|apache].bat-->-Restart [Resin|Apache] Process: status
+Restart [Resin|Apache] Process-->-Restart [Resin|Apache] Action: status
+Restart [Resin|Apache] Action->Restart [Resin|Apache] Action: openInformation() ó openError()
+
+
+
+4to diagrama
+http://www.websequencediagrams.com/cgi-bin/cdraw?lz=UmVzaW5Db25zb2xlQWN0aW9uLT4rQWN0aXZhdG9yOiBnZXRDcmVkZXRpYWxzKCkKABIJLS0-LQArEjogY3JlZGVuACoFCgBIFQBtBSBzdGRvdXQubG9nAF8FTG9nKCkAKgYAEAsATBgoY2xvc2VkKQ&s=roundgreen
+
+
+ResinConsoleAction->+Activator: getCredetials()
+Activator-->-ResinConsoleAction: credentials
+ResinConsoleAction->+Resin stdout.log: getLog()
+Resin stdout.log-->-ResinConsoleAction: (closed)
